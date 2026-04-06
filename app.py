@@ -1,7 +1,7 @@
 import streamlit as st
 import joblib
 import time
-
+st.write("🔥 UPDATED VERSION 100%")
 # ---------------- LOAD MODEL ----------------
 model = joblib.load("phishing_pipeline.pkl")
 
