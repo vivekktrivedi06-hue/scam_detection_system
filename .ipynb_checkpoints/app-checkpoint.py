@@ -1,111 +1,153 @@
 import streamlit as st
 import joblib
+import time
 
-# Load model
+# ---------------- LOAD MODEL ----------------
 model = joblib.load("phishing_pipeline.pkl")
 
-st.set_page_config(
-    page_title="Scam Detection System",
-    layout="centered"
-)
+# ---------------- PAGE CONFIG ----------------
+st.set_page_config(page_title="AI Shield", page_icon="🛡", layout="centered")
 
-# -------- CLEAN WHITE PROFESSIONAL THEME -------- #
+# ---------------- STYLING ----------------
 st.markdown("""
 <style>
+
+/* Background */
 .stApp {
-    background-color: #F7F9FC;
+    background: linear-gradient(135deg, #e0f2fe, #f8fafc);
 }
 
 /* Title */
-h1 {
-    color: #1A1A1A;
+.title {
     text-align: center;
-    font-size: 40px;
-    font-weight: 600;
+    font-size: 44px;
+    font-weight: 700;
+    color: #0f172a;
+    animation: fadeIn 1.5s ease-in-out;
 }
 
-/* Divider */
-hr {
-    border: 1px solid #E0E6ED;
+/* Subtitle */
+.subtitle {
+    text-align: center;
+    font-size: 16px;
+    color: #475569;
+    margin-bottom: 30px;
+    animation: fadeIn 2s ease-in-out;
 }
 
-/* Labels */
-label {
-    color: #333333 !important;
-    font-weight: 500;
+/* Card */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    animation: slideUp 1s ease;
 }
 
-/* Text Area */
+/* Inputs */
 .stTextArea textarea {
-    background-color: #FFFFFF;
-    color: #000000;
-    border-radius: 8px;
-    border: 1px solid #D1D9E6;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
 }
 
-/* Buttons */
+/* Button */
 .stButton>button {
-    background-color: #2563EB;
+    background: linear-gradient(45deg, #38bdf8, #0ea5e9);
     color: white;
-    border-radius: 8px;
-    height: 3em;
+    border-radius: 12px;
+    height: 3.2em;
     width: 100%;
     font-weight: 600;
-    border: none;
+    transition: 0.3s;
 }
 
 .stButton>button:hover {
-    background-color: #1E4DB7;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(14,165,233,0.6);
 }
 
-/* Result Box */
-.result-box {
+/* Result */
+.result {
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 12px;
     text-align: center;
     font-size: 18px;
     margin-top: 20px;
-    font-weight: 500;
+    font-weight: 600;
+    animation: slideUp 0.6s ease;
 }
+
+/* Footer */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 40px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes slideUp {
+    from {opacity: 0; transform: translateY(25px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# -------- TITLE -------- #
-st.title("Scam Detection System")
+# ---------------- HEADER ----------------
+st.markdown('<div class="title">🛡 AI Shield</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">AI-powered system to detect phishing and scam messages in real-time</div>', unsafe_allow_html=True)
 
-st.markdown("---")
+# ---------------- MAIN CARD ----------------
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
-# -------- OPTION SELECT -------- #
-option = st.radio(
-    "Choose Content Type",
-    ("Email", "Message")
-)
+option = st.radio("Select Content Type", ["Email", "Message"])
 
-st.markdown("---")
+user_input = st.text_area(f"Enter {option} Content", height=180)
 
-# -------- INPUT -------- #
-user_input = st.text_area(
-    f"Enter {option} Content Below:",
-    height=200
-)
-
-# -------- ANALYZE BUTTON -------- #
-if st.button("Analyze Content"):
+if st.button("🔍 Analyze Content"):
     if user_input.strip() == "":
-        st.warning("Please enter content to analyze.")
+        st.warning("Please enter content to analyze")
     else:
-        prediction = model.predict([user_input])[0]
+        with st.spinner("Analyzing with AI model..."):
+            time.sleep(1)  # smooth UX
+
+            prediction = model.predict([user_input])[0]
 
         if prediction == 1:
             st.markdown(
-                '<div class="result-box" style="background-color:#FFE5E5;color:#C62828;">⚠ Scam Detected</div>',
+                '<div class="result" style="background:#fee2e2;color:#b91c1c;">⚠ Scam Detected</div>',
                 unsafe_allow_html=True
             )
         else:
             st.markdown(
-                '<div class="result-box" style="background-color:#E6F4EA;color:#1B5E20;">✔ Safe Content</div>',
+                '<div class="result" style="background:#dbeafe;color:#1e3a8a;">✔ Safe Content</div>',
                 unsafe_allow_html=True
             )
 
-st.markdown("---")
-st.caption("Machine Learning Based Scam Classification System")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------------- EXTRA INFO ----------------
+st.markdown("<br>", unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("### ⚡ Fast")
+    st.write("Instant predictions using optimized ML model")
+
+with col2:
+    st.markdown("### 🔒 Secure")
+    st.write("Your data is not stored or shared")
+
+with col3:
+    st.markdown("### 🧠 AI Based")
+    st.write("Trained on real-world phishing datasets")
+
+# ---------------- FOOTER ----------------
+st.markdown('<div class="footer">Made by Vivek Trivedi | Machine Learning Project</div>', unsafe_allow_html=True)
